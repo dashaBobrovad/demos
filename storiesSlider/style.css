@@ -1,7 +1,6 @@
 .storiesSlider {
   --offeset: 15px;
-  --pagination-topOffset: 20px;
-  --pagination-bulletHeight: 2px;
+  --offeset-vertical: 20px;
 }
 
 .storiesSlider_innerWrapper {
@@ -15,13 +14,29 @@
   background-color: var(--color-bg);
 }
 
+.storiesSlider_fullBtn, .storiesSlider_previewCard{
+  z-index: 2;
+}
+
 .storiesSlider_previewCard {
   position: absolute;
   top: 30px;
   left: var(--offeset);
-  z-index: 2;
   display: flex;
   color: var(--color-reverse);
+  max-width: calc(50% - var(--offeset));
+}
+
+.storiesSlider_fullBtn{
+  font-weight: normal;
+  position: absolute;
+  left: var(--offeset);
+  right: var(--offeset);
+  bottom: var(--offeset-vertical);
+}
+
+.storiesSlider_innerSlide:not(:last-child) .storiesSlider_fullBtn{
+  display: none;
 }
 
 .storiesSlider_previewPicture {
@@ -41,11 +56,6 @@
   height: 100%;
 }
 
-.storiesSlider_btn {
-  width: 100%;
-  font-weight: normal;
-}
-
 .storiesSlider .swiper-button-lock {
   display: flex;
 }
@@ -57,13 +67,13 @@
   display: flex;
   margin-left: var(--pagination-offset);
   margin-right: var(--pagination-offset);
-  padding: var(--pagination-topOffset) var(--offeset) 0 var(--offeset);
+  padding: var(--offeset-vertical) var(--offeset) 0 var(--offeset);
   box-sizing: border-box;
 }
 
 .storiesSlider .swiper-pagination-bullet {
   width: 100%;
-  height: var(--pagination-bulletHeight);
+  height: 2px;
   border-radius: var(--radius);
 }
 
@@ -211,20 +221,27 @@
 
   .storiesSlider_arrows [class*="swiper-button"]{
     height: 100%;
-    top: calc(var(--pagination-bulletHeight) + var(--pagination-topOffset) + 5px);
     margin-top: 0;
-    background: transparent;
+    top: 0;
     border: none;
-    width: 50%; 
+    width: 50%;
+    background: transparent; 
     opacity: 0;
+    z-index: -1;
+  }
+
+  .storiesSlider_mainWrapper{
+    pointer-events: none;
+  }
+
+  .storiesSlider_previewCard,
+  .storiesSlider_fullBtn, 
+  .storiesSlider_innerPagination{
+    pointer-events: auto;
   }
 
   .storiesSlider_main {
     height: 100%;
-  }
-
-  .storiesSlider_innerWrapper {
-    overflow: unset;
   }
 
   .storiesSlider_name {
