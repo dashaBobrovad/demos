@@ -1,0 +1,213 @@
+/* START for debug */
+.storiesSlider [class*="swiper-button-"][class*="storiesSlider_inner"] {
+  background-color: green;
+}
+
+.storiesSlider_innerSlide.swiper-slide {
+  background-color: pink;
+}
+
+.storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"] {
+  background-color: red;
+  /* remove for pretty btns */
+  /* margin-top: 30px; */
+}
+
+.storiesSlider_arrows {
+  /* background-color: yellow;
+  height: 100px; */
+  z-index: 2;
+}
+/* END for debug */
+
+.swiper-button-lock{
+  display: flex;
+}
+.storiesSlider_innerWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 758px) {
+}
+
+@media (min-width: 759px) {
+  .storiesSlider {
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .storiesSlider {
+    --nav-arrow-width: 7px;
+    --nav-btn-size: 40px;
+    --slide-width: 400px;
+  }
+
+  .storiesSlider .swiper-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .storiesSlider_arrows {
+    width: calc(var(--slide-width) + 2 * var(--nav-btn-size) + 20px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .storiesSlider .swiper-button-next {
+    right: 0;
+  }
+
+  .storiesSlider .swiper-button-prev {
+    left: 0;
+  }
+
+  .storiesSlider [class*="swiper-button-"] {
+    --arrow-shift: 0;
+    width: var(--nav-btn-size);
+    height: var(--nav-btn-size);
+    border-radius: 50%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.12);
+  }
+
+  .storiesSlider [class*="swiper-button-"]::after {
+    content: "";
+    display: block;
+    width: var(--nav-arrow-width);
+    height: calc(2 * var(--nav-arrow-width));
+    flex-shrink: 0;
+    font-family: sans-serif;
+    background: var(--icon-arrow) 50% 50% / contain no-repeat;
+  }
+
+  .storiesSlider .swiper-button-prev::after {
+    transform: rotate(180deg);
+  }
+
+  .storiesSlider .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 758px) {
+}
+
+@media (min-width: 759px) {
+  .storiesSlider_mainSlide.swiper-slide {
+    height: 450px;
+    width: var(--slide-width);
+  }
+}
+
+@media (min-width: 759px) {
+  /* main */
+  .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"].show {
+    display: flex;
+  }
+
+  .storiesSlider [class*="storiesSlider_main"].swiper-button-disabled,
+  .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"] {
+    display: none;
+  }
+}
+
+/* inner */
+
+@media (min-width: 759px) {
+  .storiesSlider_innerWrapper {
+    overflow: unset;
+  }
+
+  .storiesSlider_mainSlide {
+    overflow: hidden;
+  }
+}
+
+/* --------------------- mobile version --------------------- */
+@media (max-width: 758px) {
+  .storiesSlider {
+    /* width: 100%; */
+    width: 100%;
+    height: 100%;
+  }
+
+  .storiesSlider_main {
+    height: 100%;
+  }
+
+  .storiesSlider_innerWrapper {
+    overflow: unset;
+  }
+  .storiesSlider_arrows {
+    display: none;
+  }
+}
+
+/* pagination */
+
+.storiesSlider {
+  --inner-padding: 10px;
+  --nav-arrow-width: 5px;
+}
+
+.storiesSlider .swiper-pagination {
+  top: 0;
+  bottom: auto;
+  display: flex;
+  padding: 0 var(--inner-padding);
+  box-sizing: border-box;
+  margin-left: -4px;
+  margin-right: -4px;
+  padding-top: var(--inner-padding);
+  margin-right: var(--inner-padding);
+}
+
+.storiesSlider .swiper-pagination-bullet {
+  width: 100%;
+  height: 2px;
+  border-radius: var(--radius);
+}
+
+.storiesSlider .swiper-pagination-bullet,
+.storiesSlider .swiper-pagination-bullet-active {
+  background: rgba(0%, 0%, 0%, 20%);
+  opacity: 1;
+}
+
+.storiesSlider .swiper-pagination-bullet-active {
+  position: relative;
+}
+
+.storiesSlider .swiper-slide-active .swiper-pagination-bullet-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: greenyellow;
+  animation: bulletProgress var(--autoplay-delay) linear;
+}
+
+.storiesSlider .swiper-slide-active .swiper-pagination-bullet-active::before {
+  background-color: red;
+}
+
+.storiesSlider .swiper-pagination-bullet:only-child{
+	display: block !important;
+}
+
+@keyframes bulletProgress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
