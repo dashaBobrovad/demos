@@ -1,4 +1,5 @@
-import "./swiper.js?2";
+// import 'style.css';
+// import 'swiper.js';
 
 // вынести переменные длины наверх
 // вынести поиск по дереву в переменную (чтобы каждый раз не проходиться)
@@ -75,6 +76,7 @@ class StoriesSlider2 {
   }
 
   _createSwiper(wrapper) {
+    console.log('StoriesSlider2')
     const self = this;
     // css переменная с дилеем
     wrapper.style = `--autoplay-delay: ${this.delay}ms`;
@@ -275,4 +277,7 @@ class StoriesSlider2 {
   }
 }
 
-export { StoriesSlider2 };
+new StoriesSlider2(
+  document.querySelector('[data-popup-modules="StoriesSlider2"]')
+);
+
