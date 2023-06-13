@@ -277,7 +277,7 @@ class StoriesSlider2 {
   }
 }
 
+
 new StoriesSlider2(
   document.querySelector('[data-popup-modules="StoriesSlider2"]')
 );
-
