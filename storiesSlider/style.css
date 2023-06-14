@@ -250,6 +250,7 @@
     font-size: 18px;
   }
 }
+/* ---------------------/ END mobile --------------------- */
 
 @keyframes bulletProgress {
   from {
@@ -259,3 +260,24 @@
     width: 100%;
   }
 }
+/* ---------------------/ END pagination --------------------- */
+
+/* START for debug */
+/* .storiesSlider [class*="swiper-button-"][class*="storiesSlider_inner"] {
+  background-color: green;
+} */
+
+/* .storiesSlider_innerSlide.swiper-slide {
+  background-color: pink;
+} */
+
+/* .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"] {
+  background-color: red;
+  margin-top: 30px;
+} */
+
+.storiesSlider_arrows {
+  /* background-color: yellow;
+  height: 100px; */
+}
+/* END for debug */
