@@ -1,16 +1,5 @@
-/* высота картинки в процентах
-высота самого слайда в процентах */
-
-/* клик, засовываем данные через js, запускаем анимацию
-отдельный класc\модуль
-*/
-
 .storiesSlider {
   --offeset: 15px;
-}
-
-.swiper-button-lock {
-  display: flex;
 }
 
 .storiesSlider_innerWrapper {
@@ -19,51 +8,42 @@
 }
 
 .storiesSlider_innerSlide {
+  display: flex;
+  flex-direction: column;
   background-color: var(--color-bg);
-}
-
-.storiesSlider_previewCard .storiesSlider_date {
-  font-size: 11px;
-  opacity: 0.6;
 }
 
 .storiesSlider_previewCard {
   position: absolute;
   top: 30px;
   left: var(--offeset);
-  display: flex;
   z-index: 2;
+  display: flex;
   color: var(--color-reverse);
 }
 
-
-.storiesSlider_previewCard .storiesSlider_picture {
+.storiesSlider_previewPicture {
+  flex-shrink: 0;
   width: 32px;
   height: 52px;
-  flex-shrink: 0;
-  border-radius: var(--small-radius);
   margin-right: 10px;
+  border-radius: var(--small-radius);
+}
+
+.storiesSlider_date {
+  font-size: 11px;
+  opacity: 0.6;
 }
 
 .storiesSlider_picture {
   height: 100%;
 }
 
-.storiesSlider_innerSlide {
+.storiesSlider_info {
   display: flex;
   flex-direction: column;
-}
-.storiesSlider_info {
   flex-grow: 1;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.storiesSlider_btnWrapper {
-  flex-grow: 1;
-  display: flex;
-  align-items: flex-end;
 }
 
 .storiesSlider_title {
@@ -74,9 +54,19 @@
   margin-bottom: 25px;
 }
 
+.storiesSlider_btnWrapper {
+  display: flex;
+  align-items: flex-end;
+  flex-grow: 1;
+}
+
 .storiesSlider_btn {
   width: 100%;
   font-weight: normal;
+}
+
+.swiper-button-lock {
+  display: flex;
 }
 
 .storiesSlider .swiper-pagination {
@@ -84,10 +74,10 @@
   top: 0;
   bottom: auto;
   display: flex;
-  padding: 20px var(--offeset) 0 var(--offeset);
-  box-sizing: border-box;
   margin-left: var(--pagination-offset);
   margin-right: var(--pagination-offset);
+  padding: 20px var(--offeset) 0 var(--offeset);
+  box-sizing: border-box;
 }
 
 .storiesSlider .swiper-pagination-bullet {
@@ -109,30 +99,28 @@
 .storiesSlider .swiper-slide-active .swiper-pagination-bullet-active::before {
   content: "";
   position: absolute;
-  left: 0;
   top: 0;
-  height: 100%;
+  left: 0;
   width: 100%;
+  height: 100%;
   background-color: var(--color-bg);
   animation: bulletProgress var(--autoplay-delay) linear;
 }
 
 .storiesSlider .swiper-pagination-bullet:only-child {
-  display: block !important;
+  display: block !important; /* в  дефолтных стилях свайпера используется !important , поэтому иначе никак */
 }
 
-/* ---------------------/ START desktop --------------------- */
 @media (min-width: 759px) {
   .storiesSlider {
     --nav-arrow-width: 8px;
     --nav-btn-size: 44px;
     --slide-width: 400px;
-    margin: 0;
     flex-grow: 1;
- 
     height: 86%;
     max-height: 655px;
     min-height: 425px;
+    margin: 0;
   }
 
   .storiesSlider .swiper-container {
@@ -141,13 +129,50 @@
     height: 100%;
   }
 
+  .storiesSlider .swiper-slide {
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .storiesSlider_mainSlide.swiper-slide {
+    width: var(--slide-width);
+    overflow: hidden;
+  }
+
+  .storiesSlider_innerWrapper {
+    overflow: unset;
+  }
+
+  .storiesSlider_innerSlide {
+    flex-direction: column;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .storiesSlider_mainSlide {
+    border-radius: var(--wide-radius);
+  }
+
+  .storiesSlider_poster {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 69%;
+  }
+
+  .storiesSlider_title {
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+
   .storiesSlider_arrows {
-    width: calc(var(--slide-width) + 2 * var(--nav-btn-size) + 20px);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
+    width: calc(var(--slide-width) + 2 * var(--nav-btn-size) + 20px);
   }
 
   .storiesSlider .swiper-button-next {
@@ -169,26 +194,15 @@
   .storiesSlider [class*="swiper-button-"]::after {
     content: "";
     display: block;
+    flex-shrink: 0;
     width: var(--nav-arrow-width);
     height: calc(2 * var(--nav-arrow-width));
-    flex-shrink: 0;
     font-family: sans-serif;
     background: var(--icon-arrow) 50% 50% / contain no-repeat;
   }
 
   .storiesSlider .swiper-button-prev::after {
     transform: rotate(180deg);
-  }
-
-  .storiesSlider .swiper-slide {
-    display: flex;
-    align-items: flex-start;
-    z-index: 1;
-  }
-
-  .storiesSlider_mainSlide.swiper-slide {
-    /* height: 450px; */
-    width: var(--slide-width);
   }
 
   .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"].show {
@@ -199,43 +213,16 @@
   .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"] {
     display: none;
   }
-  .storiesSlider_innerWrapper {
-    overflow: unset;
-  }
-
-  .storiesSlider_mainSlide {
-    overflow: hidden;
-  }
-
-  .storiesSlider_innerSlide {
-    border-radius: var(--wide-radius);
-    overflow: hidden;
-    flex-direction: column;
-  }
-
-  .storiesSlider_poster {
-    width: 100%;
-    /* TODO: % */
-    height: 69%;
-    position: relative;
-    z-index: 1;
-  }
-
-  
-
-  .storiesSlider_title {
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
 }
-/* ---------------------/ END desktop --------------------- */
 
-/* ---------------------/ START mobile --------------------- */
 @media (max-width: 758px) {
   .storiesSlider {
-    /* width: 100%; */
     width: 100%;
     height: 100%;
+  }
+
+  .storiesSlider_arrows {
+    display: none;
   }
 
   .storiesSlider_main {
@@ -245,13 +232,15 @@
   .storiesSlider_innerWrapper {
     overflow: unset;
   }
-  .storiesSlider_arrows {
-    display: none;
+
+  .storiesSlider_poster {
+    height: 56%;
   }
 
-  .storiesSlider_previewCard .storiesSlider_name {
+  .storiesSlider_name {
     font-size: 13px;
   }
+
   .storiesSlider_title {
     font-size: 20px;
     margin-bottom: 10px;
