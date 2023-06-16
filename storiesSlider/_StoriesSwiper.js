@@ -8,6 +8,7 @@ class StoriesSwiper {
     this.wrapper = wrapper;
     this.list = this.wrapper.querySelectorAll("[data-StoriesSwiper-item]");
 
+    this.initialSlide;
     this.sliderContent = [];
     this.markup = "";
   }
@@ -19,51 +20,50 @@ class StoriesSwiper {
     Array.from(this.sliderContent).forEach((item) => {
       item.forEach((item) => {
         inner += `
-        <div class="storiesSlider_innerSlide swiper-slide">
-                  <div class="storiesSlider_poster">
-                    <div class="storiesSlider_previewCard">
-                      <picture data-popup-modules='picture' class="storiesSlider_previewPicture picture picture-poster">
-                        <template>
-                          <source srcset="img/tmp/${item.previewTmp}.webp" type="image/webp" />
-                        </template>
-                        <img class="picture_image" src="img/bg/px.gif" data-picture="img/tmp/${item.previewTmp}.jpg" alt="" />
-                      </picture>
-                      <div class="storiesSlider_previewInfo">
-                        <div class="storiesSlider_name">${item.name}</div>
-                        <div class="storiesSlider_date">${item.date}</div>
-                      </div>
-                    </div>
-                    <picture data-popup-modules='picture' class="storiesSlider_picture picture">
-                      <template>
-                        <source srcset="img/tmp/${item.tmp}.webp" type="image/webp" />
-                      </template>
-                      <img class="picture_image" src="img/bg/px.gif" data-picture="img/tmp/${item.tmp}.jpg" alt="" />
-                    </picture>
-                  </div>
-                  <div class="storiesSlider_info">
-                    <div class="storiesSlider_title ellipsis-2">${item.title}</div>
-                    <div class="storiesSlider_desc ellipsis-2">${item.desc}</div>
-                    <div class="storiesSlider_btnWrapper"><a href=${item.link} class="storiesSlider_btn button-primary-reverse button-large">Читать далее</a></div>
-
-                  </div>
+          <div class="storiesSlider_innerSlide swiper-slide">
+            <div class="storiesSlider_poster">
+              <div class="storiesSlider_previewCard">
+                <picture data-popup-modules='picture' class="storiesSlider_previewPicture picture picture-poster">
+                  <template>
+                    <source srcset="img/tmp/${item.previewTmp}.webp" type="image/webp" />
+                  </template>
+                  <img class="picture_image" src="img/bg/px.gif" data-picture="img/tmp/${item.previewTmp}.jpg" alt="" />
+                </picture>
+                <div class="storiesSlider_previewInfo">
+                  <div class="storiesSlider_name">${item.name}</div>
+                  <div class="storiesSlider_date">${item.date}</div>
                 </div>
-        `;
+              </div>
+              <picture data-popup-modules='picture' class="storiesSlider_picture picture">
+                <template>
+                  <source srcset="img/tmp/${item.tmp}.webp" type="image/webp" />
+                </template>
+                <img class="picture_image" src="img/bg/px.gif" data-picture="img/tmp/${item.tmp}.jpg" alt="" />
+              </picture>
+            </div>
+            <div class="storiesSlider_info">
+              <div class="storiesSlider_title ellipsis-2">${item.title}</div>
+              <div class="storiesSlider_desc ellipsis-2">${item.desc}</div>
+              <div class="storiesSlider_btnWrapper"><a href=${item.link} class="storiesSlider_btn button-primary-reverse button-large">Читать далее</a></div>
+            </div>
+          </div>`;
       });
 
       innerMarkup += `
-      <div class="storiesSlider_mainSlide swiper-slide">
-        <div class="storiesSlider_innerWrapper swiper">
-          <div class="swiper-wrapper">
-            ${inner}
+        <div class="storiesSlider_mainSlide swiper-slide">
+          <div class="storiesSlider_innerWrapper swiper">
+            <div class="swiper-wrapper">
+              ${inner}
+            </div>
+            <div class="storiesSlider_innerPagination swiper-pagination"></div>
           </div>
-          <div class="storiesSlider_innerPagination swiper-pagination"></div>
-        </div>
-      </div>`;
+        </div>`;
 
       inner = "";
     });
 
-    this.markup = `<div class="popupInner"><div class="storiesSlider swiper" data-popup-modules="StoriesSlider">
+    this.markup = `
+      <div class="popupInner"><div class="storiesSlider swiper" data-popup-modules="StoriesSlider">
         <div class="storiesSlider_main swiper-container">
           <div class="storiesSlider_mainWrapper swiper-wrapper">${innerMarkup}</div>
         </div>
@@ -75,11 +75,16 @@ class StoriesSwiper {
             <div class="storiesSlider_mainNext swiper-button-next"></div>
           </div>
         </div>
-      </div></div>`;
+      </div>`;
   }
 
-  _createSlider() {
+  _createSlider(e) {
+    this.initialSlide = JSON.parse(
+      e.currentTarget.getAttribute("data-StoriesSwiper-item")
+    ).initialSlide;
+
     this._insertMarkup();
+
     this.markup && this._showPopup();
   }
 
@@ -89,21 +94,14 @@ class StoriesSwiper {
       addClass: "popup-storiesSlider",
       name: "storiesSlider",
       content: this.markup,
+      initialSlide: this.initialSlide,
       onopen: (wrapper) => {
         this.moduleAll = APP.manager.run(wrapper, "data-popup-modules");
       },
-      // oncloseBefore: () => {
-      //     if (this.changeHistory) {
-      //         var path = location.href.replace('#!' + this.name, '');
-      //         window.history.pushState({}, '', path);
-      //     } else this.changeHistory = true;
-
-      //     APP.manager.destroy(this.moduleAll);
-      //     return true;
-      // },
-      // onclose: () => {
-      //     this.container.appendChild(this.formTag);
-      // }
+      oncloseBefore: () => {
+        APP.manager.destroy(this.moduleAll);
+        return true;
+      },
     });
   }
 
@@ -112,11 +110,9 @@ class StoriesSwiper {
       item.addEventListener("click", this._createSlider.bind(this));
 
       this.sliderContent.push(
-        JSON.parse(item.getAttribute("data-param")).opts.content
+        JSON.parse(item.getAttribute("data-StoriesSwiper-item")).content
       );
     });
-
-    // console.log(this.sliderContent);
   }
 
   destroy() {
@@ -125,6 +121,7 @@ class StoriesSwiper {
     });
 
     this.sliderContent = [];
+    this.markup = "";
   }
 }
 

@@ -1,12 +1,3 @@
-// import 'style.css';
-// import 'swiper.js';
-
-// вынести переменные длины наверх
-// вынести поиск по дереву в переменную (чтобы каждый раз не проходиться)
-// вынести лгические условия в отдельную переменную (типа последний не последний (мб в апишке есть))
-// максимально вынести в ф-и повторяющуюся логику
-// отключать логику навигации для мобилы 
-
 const sliderMainSettings = {
   pagination: false,
   spaceBetween: 0,
@@ -56,33 +47,31 @@ const sliderItemsSettings = {
   },
 };
 
-class StoriesSlider2 {
+class StoriesSlider {
   constructor(wrapper) {
     if (!window.history) return false;
-    
-    // this.param =
-    //   (wrapper.getAttribute("data-param") &&
-    //     JSON.parse(wrapper.getAttribute("data-param"))) ||
-    //   {};
 
     this.wrapper = wrapper;
-    this.delay = 99999; // 20000
+    this.delay = 20000;
+    this.initialSlide =
+      uPopup.all["storiesSlider"] &&
+      uPopup.all["storiesSlider"].param.initialSlide;
 
     this.sliderMain = false;
     this.sliderItems = [];
+    this.setTimeoutList = [];
 
-    this._createSwiper(wrapper);
-    this._delaySliderItems(this.delay);
+    this.init(wrapper);
   }
 
   _createSwiper(wrapper) {
-    console.log('StoriesSlider2')
-    const self = this;
     // css переменная с дилеем
     wrapper.style = `--autoplay-delay: ${this.delay}ms`;
 
     // sliderMain
     // Отдельно задаём навигацию (чтобы настройки слайдеров можно было отдельно от навигации прокидывать в класс)
+    sliderMainSettings.initialSlide = this.initialSlide;
+
     sliderMainSettings.navigation = {
       nextEl: wrapper.querySelector(
         ".storiesSlider_arrows .storiesSlider_mainNext"
@@ -91,12 +80,12 @@ class StoriesSlider2 {
         ".storiesSlider_arrows .storiesSlider_mainPrev"
       ),
     };
+
     this.sliderMain = new Swiper(
       wrapper.querySelector(".storiesSlider_main"),
       sliderMainSettings
     );
 
-    // TODO: вынести в отдельную ф-ю и переменные
     this.sliderMain.on("init", () => {
       wrapper
         .querySelectorAll(".storiesSlider_innerWrapper")
@@ -130,7 +119,7 @@ class StoriesSlider2 {
         });
 
       if (this.sliderItems[this.sliderMain.activeIndex].slides.length === 1) {
-        this.sliderMain.navigation.nextEl.classList.add("show");
+        this._showMainNav("next");
         this.sliderItems[0].navigation.nextEl.classList.add(
           "swiper-button-disabled"
         );
@@ -138,13 +127,15 @@ class StoriesSlider2 {
     });
 
     this.sliderMain.init();
+
+    this._onSliderMainChangeNavigation.bind(this)();
   }
 
   _delaySliderItems() {
     // Массив интервалов (чтобы иметь возможность чистить их)
-    const setTimeoutList = [];
+    this.setTimeoutList = [];
 
-    // Рекурсивная функция которая
+    // Рекурсивная функция, которая
     // ИЛИ переключает маленький слайдер и вызывает сама себя,
     // ИЛИ переключает большой слайдер
     const slideChangeInterval = () => {
@@ -163,15 +154,13 @@ class StoriesSlider2 {
         }
       }, this.delay);
 
-      setTimeoutList.push(timeout, closeTimeout);
+      this.setTimeoutList.push(timeout, closeTimeout);
     };
 
     // Функция которая фиксит таймауты
-    // Сначала удаляет все setTimeout а потом вызывает зациклиную функцию slideChangeInterval
+    // Сначала удаляет все setTimeout а потом вызывает slideChangeInterval
     const clearStart = () => {
-      for (const timeout of setTimeoutList) {
-        clearTimeout(timeout);
-      }
+      this._clearAllTimeouts();
       slideChangeInterval();
     };
 
@@ -187,12 +176,14 @@ class StoriesSlider2 {
     }
 
     this.sliderMain.on("slideChange", () => {
-      this.sliderItems[this.sliderMain.activeIndex].navigation.update();
-      this.sliderItems[this.sliderMain.activeIndex].navigation.init();
+      const activeNav =
+        this.sliderItems[this.sliderMain.activeIndex].navigation;
+      activeNav.update();
+      activeNav.init();
 
       clearStart();
 
-      onSliderMainChangeNavigation();
+      this._onSliderMainChangeNavigation.bind(this)();
 
       if (this.sliderMain.activeIndex !== 0) {
         this.sliderItems[this.sliderMain.previousIndex].navigation.destroy();
@@ -210,64 +201,18 @@ class StoriesSlider2 {
       switch (true) {
         case swiperItem.activeIndex === swiperItem.slides.length - 1 &&
           this.sliderMain.activeIndex !== this.sliderMain.slides.length - 1:
-          this.sliderMain.navigation.nextEl.classList.add("show");
+          this._showMainNav("next");
+          this._hideMainNav("prev");
           break;
         case this.sliderItems[this.sliderMain.activeIndex].activeIndex !== 0:
-          this.sliderMain.navigation.prevEl.classList.remove("show");
+          this._hideMainNav("prev");
           break;
         case swiperItem.activeIndex === 0 && this.sliderMain.activeIndex !== 0:
-          this.sliderMain.navigation.prevEl.classList.add("show");
+          this._showMainNav("prev");
+          this._hideMainNav("next");
           break;
         case swiperItem.activeIndex !== swiperItem.slides.length - 1:
-          this.sliderMain.navigation.nextEl.classList.remove("show");
-          break;
-        default: {
-          return;F
-        }
-      }
-    };
-
-    const onSliderMainChangeNavigation = () => {
-      if (this.sliderItems[this.sliderMain.activeIndex].slides.length === 1) {
-        if (this.sliderMain.activeIndex === this.sliderMain.slides.length - 1) {
-          this.sliderItems[
-            this.sliderMain.activeIndex
-          ].navigation.nextEl.style.display = "none";
-        }
-
-        if (this.sliderMain.activeIndex === 0) {
-          this.sliderItems[
-            this.sliderMain.activeIndex
-          ].navigation.prevEl.style.display = "none";
-        }
-      } else {
-        this.sliderItems[
-          this.sliderMain.activeIndex
-        ].navigation.nextEl.style.display = "flex";
-        this.sliderItems[
-          this.sliderMain.activeIndex
-        ].navigation.prevEl.style.display = "flex";
-      }
-
-      switch (true) {
-        case this.sliderItems[this.sliderMain.activeIndex].slides.length ===
-          1 &&
-          this.sliderMain.activeIndex === this.sliderMain.slides.length - 1:
-          this.sliderMain.navigation.prevEl.classList.add("show");
-          break;
-        case this.sliderItems[this.sliderMain.activeIndex].slides.length ===
-          1: {
-          this.sliderMain.navigation.nextEl.classList.add("show");
-          break;
-        }
-        case this.sliderItems[this.sliderMain.activeIndex].activeIndex === 0:
-          this.sliderMain.navigation.nextEl.classList.remove("show");
-          this.sliderMain.navigation.prevEl.classList.add("show");
-          break;
-        case this.sliderItems[this.sliderMain.activeIndex].activeIndex ===
-          this.sliderItems[this.sliderMain.activeIndex].slides.length - 1:
-          this.sliderMain.navigation.nextEl.classList.add("show");
-          this.sliderMain.navigation.prevEl.classList.remove("show");
+          this._hideMainNav("next");
           break;
         default: {
           return;
@@ -275,8 +220,84 @@ class StoriesSlider2 {
       }
     };
   }
-}
 
+  _onSliderMainChangeNavigation = () => {
+    const hideInnerNav = (el) => {
+      this.sliderItems[this.sliderMain.activeIndex].navigation[
+        `${el}El`
+      ].style.display = "none";
+    };
+
+    const showInnerNav = (el) => {
+      this.sliderItems[this.sliderMain.activeIndex].navigation[
+        `${el}El`
+      ].style.display = "flex";
+    };
+
+    if (this.sliderItems[this.sliderMain.activeIndex].slides.length === 1) {
+      if (this.sliderMain.activeIndex === this.sliderMain.slides.length - 1) {
+        hideInnerNav("next");
+      }
+      if (this.sliderMain.activeIndex === 0) {
+        hideInnerNav("prev");
+      }
+    } else {
+      showInnerNav("next");
+      showInnerNav("prev");
+    }
+
+    switch (true) {
+      case this.sliderItems[this.sliderMain.activeIndex].slides.length === 1 &&
+        this.sliderMain.activeIndex === this.sliderMain.slides.length - 1:
+        this._showMainNav("prev");
+        break;
+      case this.sliderItems[this.sliderMain.activeIndex].slides.length === 1: {
+        this._showMainNav("next");
+        break;
+      }
+      case this.sliderItems[this.sliderMain.activeIndex].activeIndex === 0:
+        this._hideMainNav("next");
+        this._showMainNav("prev");
+        break;
+      case this.sliderItems[this.sliderMain.activeIndex].activeIndex ===
+        this.sliderItems[this.sliderMain.activeIndex].slides.length - 1:
+        this._showMainNav("next");
+        this._hideMainNav("prev");
+        break;
+      default: {
+        return;
+      }
+    }
+  };
+
+  _clearAllTimeouts() {
+    for (const timeout of this.setTimeoutList) {
+      clearTimeout(timeout);
+    }
+  }
+
+  _hideMainNav(el) {
+    this.sliderMain.navigation[`${el}El`].classList.remove("show");
+  }
+
+  _showMainNav(el) {
+    this.sliderMain.navigation[`${el}El`].classList.add("show");
+  }
+
+  init(wrapper) {
+    this._createSwiper(wrapper);
+    this._delaySliderItems(this.delay);
+  }
+
+  destroy() {
+    this.wrapper.style = "";
+
+    this._clearAllTimeouts();
+
+    this.sliderItems.forEach((innerSlider) => innerSlider.destroy(true, true));
+    this.sliderMain.destroy(true, true);
+  }
+}
 
 new StoriesSlider2(
   document.querySelector('[data-popup-modules="StoriesSlider2"]')
