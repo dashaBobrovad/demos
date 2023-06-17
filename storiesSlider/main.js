@@ -52,7 +52,7 @@ class StoriesSlider {
     if (!window.history) return false;
 
     this.wrapper = wrapper;
-    this.delay = 20000;
+    this.delay = 10000;
     this.initialSlide =
       uPopup.all["storiesSlider"] &&
       uPopup.all["storiesSlider"].param.initialSlide;
@@ -120,9 +120,7 @@ class StoriesSlider {
 
       if (this.sliderItems[this.sliderMain.activeIndex].slides.length === 1) {
         this._showMainNav("next");
-        this.sliderItems[0].navigation.nextEl.classList.add(
-          "swiper-button-disabled"
-        );
+        this._disableFirstArrow("next");
       }
     });
 
@@ -170,7 +168,6 @@ class StoriesSlider {
     for (const swiperItem of this.sliderItems) {
       swiperItem.on("slideChange", () => {
         clearStart();
-
         onSwiperItemChangeNavigation(swiperItem);
       });
     }
@@ -221,7 +218,19 @@ class StoriesSlider {
     };
   }
 
+  _disableFirstArrow(el) {
+    this.sliderItems[0].navigation[`${el}El`].classList.add("js-disabled");
+  }
+
   _onSliderMainChangeNavigation = () => {
+    if (
+      this.sliderMain.activeIndex === 0 &&
+      this.sliderItems[this.sliderMain.activeIndex].activeIndex === 0
+    ) {
+      this._disableFirstArrow("prev");
+      return;
+    }
+    
     const hideInnerNav = (el) => {
       this.sliderItems[this.sliderMain.activeIndex].navigation[
         `${el}El`
@@ -255,6 +264,10 @@ class StoriesSlider {
         this._showMainNav("next");
         break;
       }
+      case this.sliderMain.activeIndex === 0 &&
+        this.sliderItems[this.sliderMain.activeIndex].activeIndex === 0:
+        this._hideMainNav("prev");
+        break;
       case this.sliderItems[this.sliderMain.activeIndex].activeIndex === 0:
         this._hideMainNav("next");
         this._showMainNav("prev");
