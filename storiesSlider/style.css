@@ -65,7 +65,7 @@
   font-weight: normal;
 }
 
-.swiper-button-lock {
+.storiesSlider .swiper-button-lock {
   display: flex;
 }
 
@@ -109,6 +109,23 @@
 
 .storiesSlider .swiper-pagination-bullet:only-child {
   display: block !important; /* в  дефолтных стилях свайпера используется !important , поэтому иначе никак */
+}
+
+.storiesSlider .swiper-button-next {
+  right: 0;
+}
+
+.storiesSlider .swiper-button-prev {
+  left: 0;
+}
+
+.storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"].show {
+  display: flex;
+}
+
+.storiesSlider [class*="storiesSlider_main"].swiper-button-disabled,
+.storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"] {
+  display: none;
 }
 
 @media (min-width: 759px) {
@@ -175,14 +192,6 @@
     width: calc(var(--slide-width) + 2 * var(--nav-btn-size) + 20px);
   }
 
-  .storiesSlider .swiper-button-next {
-    right: 0;
-  }
-
-  .storiesSlider .swiper-button-prev {
-    left: 0;
-  }
-
   .storiesSlider [class*="swiper-button-"] {
     --arrow-shift: 0;
     width: var(--nav-btn-size);
@@ -205,13 +214,13 @@
     transform: rotate(180deg);
   }
 
-  .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"].show {
-    display: flex;
+  .storiesSlider [class*="swiper-slide-shadow"]{
+    background: rgba(28, 28, 28, 0.3);
   }
 
-  .storiesSlider [class*="storiesSlider_main"].swiper-button-disabled,
-  .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"] {
-    display: none;
+  [class*="storiesSlider_innerPrev"].js-disabled{
+    opacity: 0.4;
+    pointer-events: none;
   }
 }
 
@@ -221,9 +230,16 @@
     height: 100%;
   }
 
-  .storiesSlider_arrows {
-    display: none;
+  .storiesSlider_arrows [class*="swiper-button"]{
+    height: 100%;
+    top: 0;
+    margin-top: 0;
+    background: transparent;
+    border: none;
+    width: 35px;
+    opacity: 0;
   }
+
 
   .storiesSlider_main {
     height: 100%;
@@ -250,7 +266,6 @@
     font-size: 18px;
   }
 }
-/* ---------------------/ END mobile --------------------- */
 
 @keyframes bulletProgress {
   from {
@@ -260,24 +275,3 @@
     width: 100%;
   }
 }
-/* ---------------------/ END pagination --------------------- */
-
-/* START for debug */
-/* .storiesSlider [class*="swiper-button-"][class*="storiesSlider_inner"] {
-  background-color: green;
-} */
-
-/* .storiesSlider_innerSlide.swiper-slide {
-  background-color: pink;
-} */
-
-/* .storiesSlider [class*="swiper-button-"][class*="storiesSlider_main"] {
-  background-color: red;
-  margin-top: 30px;
-} */
-
-.storiesSlider_arrows {
-  /* background-color: yellow;
-  height: 100px; */
-}
-/* END for debug */

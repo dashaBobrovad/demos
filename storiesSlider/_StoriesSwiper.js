@@ -82,8 +82,10 @@ class StoriesSwiper {
     this.initialSlide = JSON.parse(
       e.currentTarget.getAttribute("data-StoriesSwiper-item")
     ).initialSlide;
-
+    
     this._insertMarkup();
+
+    window.scrollTo(0, 0);
 
     this.markup && this._showPopup();
   }
