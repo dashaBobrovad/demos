@@ -12,11 +12,11 @@ const data = [
     "OXOOO",
 ]
 
-function matrix(data) { // O(N*N)
+function matrix(data) { // O(n^2)
     let p = 0;
 
-    for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < data.length; j++) {
+    for (let i = 0; i < data.length; i++) { // O(n)
+        for (let j = 0; j < data.length; j++) { // O(n)
             if (data[i][j] === "X") {
                 // 1. Первый эл-т
                 // 2. Над элементом ничего нет в первой строке
