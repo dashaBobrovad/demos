@@ -17,10 +17,10 @@ const data = {
     "Санкт-Петербург": new Date("2024-07-10"),
 };
 
-function city_date(data) {
+function city_date(data) { // O(n*log2n)
     const res = Object.keys(data)
-        .filter(city => data[city] > Date.now())
-        .sort((a, b) => data[a] - data[b]);
+        .filter(city => data[city] > Date.now()) // O(n)
+        .sort((a, b) => data[a] - data[b]); // O(N*log2n)
 
     console.log("result: ", res);
     return res;
