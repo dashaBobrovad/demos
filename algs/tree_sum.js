@@ -44,7 +44,7 @@ const data = [
 ];
 
 function tree_sum(data) {
-    if (data.length === 0) {
+    if (!data.length) {
         return 0;
     }
 
@@ -59,7 +59,6 @@ function tree_sum(data) {
     while (stack.length) {
         let node = stack.pop();
         sum += node.v;
-        console.log(sum);
 
         if (node.c) {
             node.c.forEach(node => {
@@ -68,8 +67,7 @@ function tree_sum(data) {
         }
     }
 
-    console.log(sum)
     return sum;
 }
 
-tree_sum(data);
+console.log(tree_sum(data));
